@@ -9,10 +9,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DEBUG_TAG = "DBHelper";
 
     private static final String DB_NAME = "CAPITAL_DATA.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     // Define all names (strings) for table and column names.
     // This will be useful if we want to change these names later.
+    //CAPITAL_DATA table info
     public static final String TABLE_CAPITAL_DATA = "CAPITAL_DATA";
     public static final String CAPITAL_DATA_COLUMN_ID = "_id";
     public static final String CAPITAL_DATA_COLUMN_STATE = "state";
@@ -22,6 +23,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String CAPITAL_DATA_COLUMN_STATEHOOD = "statehood";
     public static final String CAPITAL_DATA_COLUMN_CAPITAL_SINCE = "capital_since";
     public static final String CAPITAL_DATA_COLUMN_RANK = "rank";
+    //QUIZ table info
+    public static final String TABLE_QUIZ = "QUIZ";
+    public static final String QUIZ_COLUMN_ID = "_id";
+    public static final String QUIZ_COLUMN_STATE_ID = "StateID";
+    public static final String QUIZ_COLUMN_CITY1 = "City1";
+    public static final String QUIZ_COLUMN_CITY2 = "City2";
+    public static final String QUIZ_COLUMN_CITY3 = "City3";
+    public static final String QUIZ_COLUMN_NUM_CORRECT_ANSWER = "NumCorrectAnswer";
 
     // This is a reference to the only instance for the helper.
     private static DBHelper helperInstance;
@@ -39,6 +48,18 @@ public class DBHelper extends SQLiteOpenHelper {
                     + CAPITAL_DATA_COLUMN_STATEHOOD + " INTEGER, "
                     + CAPITAL_DATA_COLUMN_CAPITAL_SINCE + " INTEGER, "
                     + CAPITAL_DATA_COLUMN_RANK + " INTEGER"
+                    + ")";
+    private static final String CREATE_QUIZ =
+            "CREATE TABLE " + TABLE_QUIZ + " ("
+                    + QUIZ_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + QUIZ_COLUMN_STATE_ID + " INTEGER, "
+                    + QUIZ_COLUMN_CITY1 + " TEXT, "
+                    + QUIZ_COLUMN_CITY2 + " TEXT, "
+                    + QUIZ_COLUMN_CITY3 + " TEXT, "
+                    + QUIZ_COLUMN_NUM_CORRECT_ANSWER + " INTEGER, "
+                    + "FOREIGN KEY (" + QUIZ_COLUMN_STATE_ID + ") "
+                    + "REFERENCES " + TABLE_CAPITAL_DATA
+                    + "(" + CAPITAL_DATA_COLUMN_ID + ")"
                     + ")";
 
     // Note that the constructor is private!
@@ -63,6 +84,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate( SQLiteDatabase db ) {
         db.execSQL( CREATE_CAPITAL_DATA );
+        db.execSQL(CREATE_QUIZ);
         Log.d( DEBUG_TAG, "Table " + TABLE_CAPITAL_DATA + " created" );
     }
 
@@ -71,6 +93,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // if the version will be bumped up, as we modify the database schema.
     @Override
     public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion ) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUIZ);
         db.execSQL( "drop table if exists " + TABLE_CAPITAL_DATA );
         onCreate( db );
         Log.d( DEBUG_TAG, "Table " + TABLE_CAPITAL_DATA + " upgraded" );

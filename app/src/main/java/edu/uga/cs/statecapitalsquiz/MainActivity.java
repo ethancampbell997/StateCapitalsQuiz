@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 statesList = statesData.retrieveAllStates();
             }
             //displays the states, method defined below
-            displayStates(statesList);
+            //displayStates(statesList);//testing, dont actually need this
         } catch (Exception e) {
             Log.e(TAG, "Error loading states", e);
         } finally {
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
      * Mostly for testing, this functionality is not required
      * @param statesList The list of states returned by the db
      */
-    private void displayStates(List<States> statesList) {
+    /*private void displayStates(List<States> statesList) {
         //the layout for the list
         TableLayout tableLayout = findViewById(R.id.table_main);
         //deletes any existing rows
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             //puts the row in the table layout
             addTableRow(tableLayout, values);
         }
-    }
+    }*/
 
     /**
      * Puts a row into a table layout
