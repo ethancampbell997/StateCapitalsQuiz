@@ -147,4 +147,63 @@ public class QuizData {
         db.delete(DBHelper.TABLE_QUIZ, null, null);
         Log.d(DEBUG_TAG, "QUIZ table has been truncated");
     }
+    public List<ExtendedQuiz> retrieveExtendedQuizs() {
+
+        ArrayList<ExtendedQuiz> quizList = new ArrayList<>();
+        Cursor cursor = null;
+
+        String query =
+                "SELECT " +
+                        "QUIZ.City1, " +
+                        "QUIZ.City2, " +
+                        "QUIZ.City3, " +
+                        "QUIZ.NumCorrectAnswer, " +
+                        "CAPITAL_DATA.state, " +
+                        "CAPITAL_DATA.capital, " +
+                        "CAPITAL_DATA.statehood, " +
+                        "CAPITAL_DATA.capital_since, " +
+                        "CAPITAL_DATA.rank " +
+                        "FROM QUIZ " +
+                        "INNER JOIN CAPITAL_DATA " +
+                        "ON QUIZ.StateID = CAPITAL_DATA._id";
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            while (cursor.moveToNext()) {
+
+                Integer numCorrectAnswer = null;
+
+                int answerIndex =
+                        cursor.getColumnIndexOrThrow("NumCorrectAnswer");
+
+                if (!cursor.isNull(answerIndex)) {
+                    numCorrectAnswer = cursor.getInt(answerIndex);
+                }
+
+                ExtendedQuiz quiz = new ExtendedQuiz(
+                        cursor.getString(cursor.getColumnIndexOrThrow("City1")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("City2")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("City3")),
+                        numCorrectAnswer,
+                        cursor.getString(cursor.getColumnIndexOrThrow("state")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("capital")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("statehood")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("capital_since")),
+                        cursor.getInt(cursor.getColumnIndexOrThrow("rank"))
+                );
+
+                quizList.add(quiz);
+            }
+
+        } catch (Exception e) {
+            Log.e(DEBUG_TAG, "Error retrieving joined quiz data", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return quizList;
+    }
 }

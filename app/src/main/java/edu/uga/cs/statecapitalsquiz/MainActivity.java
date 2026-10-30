@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             }
             //displays the states, method defined below
             //displayStates(statesList);//testing, dont actually need this
+            deleteQuiz();//deletes the quiz before making new one. Need to remove later and put elsewhere
             createQuizQuestions(statesList);//testing listing the full quiz
         } catch (Exception e) {
             Log.e(TAG, "Error loading states", e);
@@ -215,16 +216,23 @@ public class MainActivity extends AppCompatActivity {
                 quizData.storeQuiz(quiz);
             }
             //retrieve questions from the database
-            List<Quiz> quizList = quizData.retrieveAllQuiz();
+            List<ExtendedQuiz> quizList = quizData.retrieveExtendedQuizs();
             //display the quiz questions using the existing table
-            displayQuiz(quizList);
+            //displayQuiz(quizList);//for testing
+            displayExtendedQuiz(quizList);
         } catch (Exception e) {
             Log.e(TAG, "Error creating quiz questions", e);
         } finally {
             quizData.close();
         }
     }
-    private void displayQuiz(List<Quiz> quizList) {
+
+    /**
+     * Prints all records from the quiz table
+     * Mostly for testing
+     * @param quizList
+     */
+    /*private void displayQuiz(List<Quiz> quizList) {
         //the layout for the list
         TableLayout tableLayout = findViewById(R.id.table_main);
         //deletes any existing rows
@@ -254,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
             //puts the row in the table layout
             addTableRow(tableLayout, values);
         }
-    }
+    }*/
 
     /**
      * truncates the quiz table
@@ -269,6 +277,34 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Deleting quiz failed", e);
         } finally {
             quizData.close();
+        }
+    }
+    private void displayExtendedQuiz(List<ExtendedQuiz> quizList) {
+        TableLayout tableLayout = findViewById(R.id.table_main);
+        tableLayout.removeAllViews();
+
+        String[] headers = {
+                "City 1", "City 2", "City 3",
+                "Correct Answer", "State", "Capital",
+                "Statehood", "Capital Since", "Rank"
+        };
+        addTableRow(tableLayout, headers);
+        for (int i = 0; i < quizList.size(); i++) {
+            ExtendedQuiz quiz = quizList.get(i);
+            String[] values = {
+                    quiz.getCity1(),
+                    quiz.getCity2(),
+                    quiz.getCity3(),
+                    quiz.getNumCorrectAnswer() == null
+                            ? "null"
+                            : String.valueOf(quiz.getNumCorrectAnswer()),
+                    quiz.getState(),
+                    quiz.getCapital(),
+                    String.valueOf(quiz.getStatehood()),
+                    String.valueOf(quiz.getCapitalSince()),
+                    String.valueOf(quiz.getRank())
+            };
+            addTableRow(tableLayout, values);
         }
     }
 }
