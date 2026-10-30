@@ -1,6 +1,7 @@
 package edu.uga.cs.statecapitalsquiz;
 
 public class ExtendedQuiz {
+    private long quizId;
     private String city1;
     private String city2;
     private String city3;
@@ -12,11 +13,12 @@ public class ExtendedQuiz {
     private int capitalSince;
     private int rank;
 
-    public ExtendedQuiz(String city1, String city2, String city3,
+    public ExtendedQuiz(long quizId, String city1, String city2, String city3,
                          Integer numCorrectAnswer, String state,
                          String capital, int statehood,
                          int capitalSince, int rank) {
 
+        this.quizId = quizId;
         this.city1 = city1;
         this.city2 = city2;
         this.city3 = city3;
@@ -28,6 +30,9 @@ public class ExtendedQuiz {
         this.rank = rank;
     }
 
+    public long getQuizId() {
+        return quizId;
+    }
     public String getCity1() {
         return city1;
     }

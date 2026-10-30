@@ -215,11 +215,16 @@ public class MainActivity extends AppCompatActivity {
                 //save the question in the quiz table
                 quizData.storeQuiz(quiz);
             }
+            //testing hard coded data to see if it updates the field
+            //quizData.updateNumCorrectAnswer(297, 2);
+
+
             //retrieve questions from the database
-            List<ExtendedQuiz> quizList = quizData.retrieveExtendedQuizs();
+            //List<ExtendedQuiz> quizList = quizData.retrieveExtendedQuizs();
+            List<Quiz> quizList = quizData.retrieveAllQuiz();
             //display the quiz questions using the existing table
-            //displayQuiz(quizList);//for testing
-            displayExtendedQuiz(quizList);
+            displayQuiz(quizList);//for testing
+            //displayExtendedQuiz(quizList);
         } catch (Exception e) {
             Log.e(TAG, "Error creating quiz questions", e);
         } finally {
@@ -232,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
      * Mostly for testing
      * @param quizList
      */
-    /*private void displayQuiz(List<Quiz> quizList) {
+    private void displayQuiz(List<Quiz> quizList) {
         //the layout for the list
         TableLayout tableLayout = findViewById(R.id.table_main);
         //deletes any existing rows
@@ -262,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
             //puts the row in the table layout
             addTableRow(tableLayout, values);
         }
-    }*/
+    }
 
     /**
      * truncates the quiz table
@@ -279,12 +284,13 @@ public class MainActivity extends AppCompatActivity {
             quizData.close();
         }
     }
+    /*
     private void displayExtendedQuiz(List<ExtendedQuiz> quizList) {
         TableLayout tableLayout = findViewById(R.id.table_main);
         tableLayout.removeAllViews();
 
         String[] headers = {
-                "City 1", "City 2", "City 3",
+                "ID", "City 1", "City 2", "City 3",
                 "Correct Answer", "State", "Capital",
                 "Statehood", "Capital Since", "Rank"
         };
@@ -292,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < quizList.size(); i++) {
             ExtendedQuiz quiz = quizList.get(i);
             String[] values = {
+                    String.valueOf(quiz.getQuizId()),
                     quiz.getCity1(),
                     quiz.getCity2(),
                     quiz.getCity3(),
@@ -306,5 +313,5 @@ public class MainActivity extends AppCompatActivity {
             };
             addTableRow(tableLayout, values);
         }
-    }
+    }*/
 }

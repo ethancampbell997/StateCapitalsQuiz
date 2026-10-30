@@ -154,6 +154,7 @@ public class QuizData {
 
         String query =
                 "SELECT " +
+                        "QUIZ._id, " +
                         "QUIZ.City1, " +
                         "QUIZ.City2, " +
                         "QUIZ.City3, " +
@@ -182,6 +183,7 @@ public class QuizData {
                 }
 
                 ExtendedQuiz quiz = new ExtendedQuiz(
+                        cursor.getLong(cursor.getColumnIndexOrThrow("_id")),
                         cursor.getString(cursor.getColumnIndexOrThrow("City1")),
                         cursor.getString(cursor.getColumnIndexOrThrow("City2")),
                         cursor.getString(cursor.getColumnIndexOrThrow("City3")),
@@ -205,5 +207,22 @@ public class QuizData {
         }
 
         return quizList;
+    }
+
+    /**
+     * Update the number of correct answers
+     * @param quizId the record to update
+     * @param answer the number to make numCorrectAnswer
+     */
+    public void updateNumCorrectAnswer(long quizId, int answer) {
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.QUIZ_COLUMN_NUM_CORRECT_ANSWER, answer);
+        //updates the row that matches the quiz id
+        int rowsUpdated = db.update(
+                DBHelper.TABLE_QUIZ, values,
+                DBHelper.QUIZ_COLUMN_ID + " = ?", new String[]{String.valueOf(quizId)}
+        );
+
+        Log.d(DEBUG_TAG, "Updated quiz records: " + rowsUpdated);
     }
 }
