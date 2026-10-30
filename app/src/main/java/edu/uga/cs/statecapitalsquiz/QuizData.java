@@ -143,4 +143,8 @@ public class QuizData {
 
         return Quiz;
     }
+    public void truncateTable() {
+        db.delete(DBHelper.TABLE_QUIZ, null, null);
+        Log.d(DEBUG_TAG, "QUIZ table has been truncated");
+    }
 }

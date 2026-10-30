@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import com.opencsv.CSVReader;
 import java.util.List;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     final String TAG = "CSVReading";
@@ -57,11 +58,13 @@ public class MainActivity extends AppCompatActivity {
             }
             //displays the states, method defined below
             //displayStates(statesList);//testing, dont actually need this
+            createQuizQuestions(statesList);//testing listing the full quiz
         } catch (Exception e) {
             Log.e(TAG, "Error loading states", e);
         } finally {
             statesData.close();
         }
+
     }
 
     /**
@@ -165,5 +168,107 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected( item );
+    }
+
+
+    /**
+     *Creates a quiz with 6 questions
+     * @param questionList
+     */
+    private void createQuizQuestions(List<States> questionList) {
+        QuizData quizData = new QuizData(this);
+        try {
+            quizData.open();
+            //adds 6 questions
+            for (int i = 0; i < 6; i++) {
+                States state = questionList.get(i);
+                //creates a list of the answers
+                ArrayList<String> cities = new ArrayList<>();
+                cities.add(state.getCapital());
+                cities.add(state.getCity2());
+                cities.add(state.getCity3());
+                //randomize the order of questions
+                int randomNumber = (int) (Math.random() * 3);
+                int randomNumber2 = (int) (Math.random() * 3);
+                int randomNumber3;
+                while (randomNumber == randomNumber2) {
+                    randomNumber2 = (int) (Math.random() * 3);
+                }
+                if (randomNumber != 0 && randomNumber2 != 0) {
+                    randomNumber3 = 0;
+                }
+                else if (randomNumber != 1 && randomNumber2 != 1) {
+                    randomNumber3 = 1;
+                }
+                else {
+                    randomNumber3 = 2;
+                }
+                //create the quiz object
+                Quiz quiz = new Quiz(
+                        state.getId(),
+                        cities.get(randomNumber),
+                        cities.get(randomNumber2),
+                        cities.get(randomNumber3),
+                        null
+                );
+                //save the question in the quiz table
+                quizData.storeQuiz(quiz);
+            }
+            //retrieve questions from the database
+            List<Quiz> quizList = quizData.retrieveAllQuiz();
+            //display the quiz questions using the existing table
+            displayQuiz(quizList);
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating quiz questions", e);
+        } finally {
+            quizData.close();
+        }
+    }
+    private void displayQuiz(List<Quiz> quizList) {
+        //the layout for the list
+        TableLayout tableLayout = findViewById(R.id.table_main);
+        //deletes any existing rows
+        tableLayout.removeAllViews();
+        // Add column headings.
+        String[] headers = {
+                "Quiz ID", "State ID", "City 1",
+                "City 2", "City 3", "Correct Answer"
+        };
+
+        addTableRow(tableLayout, headers);
+
+        //display each question from the quiz
+        for (int i = 0; i < quizList.size(); i++) {
+            Quiz quiz = quizList.get(i);
+            //gets question and puts into string array
+            String[] values = {
+                    String.valueOf(quiz.getId()),
+                    String.valueOf(quiz.getStateId()),
+                    quiz.getCity1(),
+                    quiz.getCity2(),
+                    quiz.getCity3(),
+                    quiz.getNumCorrectAnswer() == null
+                            ? "null"
+                            : String.valueOf(quiz.getNumCorrectAnswer())
+            };
+            //puts the row in the table layout
+            addTableRow(tableLayout, values);
+        }
+    }
+
+    /**
+     * truncates the quiz table
+     * Once this is truncated, a new quiz can be created
+     */
+    public void deleteQuiz() {
+        QuizData quizData = new QuizData(this);
+        try {
+            quizData.open();
+            quizData.truncateTable();
+        } catch (Exception e) {
+            Log.e(TAG, "Deleting quiz failed", e);
+        } finally {
+            quizData.close();
+        }
     }
 }
