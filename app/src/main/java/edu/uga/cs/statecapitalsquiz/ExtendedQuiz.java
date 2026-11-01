@@ -14,9 +14,9 @@ public class ExtendedQuiz {
     private int rank;
 
     public ExtendedQuiz(long quizId, String city1, String city2, String city3,
-                         Integer numCorrectAnswer, String state,
-                         String capital, int statehood,
-                         int capitalSince, int rank) {
+                        Integer numCorrectAnswer, String state,
+                        String capital, int statehood,
+                        int capitalSince, int rank) {
 
         this.quizId = quizId;
         this.city1 = city1;
@@ -33,6 +33,7 @@ public class ExtendedQuiz {
     public long getQuizId() {
         return quizId;
     }
+
     public String getCity1() {
         return city1;
     }
@@ -47,6 +48,10 @@ public class ExtendedQuiz {
 
     public Integer getNumCorrectAnswer() {
         return numCorrectAnswer;
+    }
+
+    public void setNumCorrectAnswer(Integer numCorrectAnswer) {
+        this.numCorrectAnswer = numCorrectAnswer;
     }
 
     public String getState() {
