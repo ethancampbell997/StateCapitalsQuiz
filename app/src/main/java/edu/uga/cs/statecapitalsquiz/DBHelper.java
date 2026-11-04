@@ -9,7 +9,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DEBUG_TAG = "DBHelper";
 
     private static final String DB_NAME = "CAPITAL_DATA.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 4;
 
     // Define all names (strings) for table and column names.
     // This will be useful if we want to change these names later.
@@ -31,6 +31,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String QUIZ_COLUMN_CITY2 = "City2";
     public static final String QUIZ_COLUMN_CITY3 = "City3";
     public static final String QUIZ_COLUMN_NUM_CORRECT_ANSWER = "NumCorrectAnswer";
+    //QUIZ_RESULT table info
+    public static final String TABLE_QUIZ_RESULT = "QuizResult";
+    public static final String QUIZ_RESULT_COLUMN_ID = "_id";
+    public static final String QUIZ_RESULT_COLUMN_DATE = "date";
+    public static final String QUIZ_RESULT_COLUMN_RESULT = "result";
 
     // This is a reference to the only instance for the helper.
     private static DBHelper helperInstance;
@@ -61,6 +66,12 @@ public class DBHelper extends SQLiteOpenHelper {
                     + "REFERENCES " + TABLE_CAPITAL_DATA
                     + "(" + CAPITAL_DATA_COLUMN_ID + ")"
                     + ")";
+    private static final String CREATE_QUIZ_RESULT =
+            "CREATE TABLE " + TABLE_QUIZ_RESULT + " ("
+                    + QUIZ_RESULT_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + QUIZ_RESULT_COLUMN_DATE + " TEXT, "
+                    + QUIZ_RESULT_COLUMN_RESULT + " INTEGER"
+                    + ")";
 
     // Note that the constructor is private!
     // So, it can be called only from
@@ -85,6 +96,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate( SQLiteDatabase db ) {
         db.execSQL( CREATE_CAPITAL_DATA );
         db.execSQL(CREATE_QUIZ);
+        db.execSQL(CREATE_QUIZ_RESULT);
         Log.d( DEBUG_TAG, "Table " + TABLE_CAPITAL_DATA + " created" );
     }
 
@@ -95,6 +107,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion ) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUIZ);
         db.execSQL( "drop table if exists " + TABLE_CAPITAL_DATA );
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUIZ_RESULT);
         onCreate( db );
         Log.d( DEBUG_TAG, "Table " + TABLE_CAPITAL_DATA + " upgraded" );
     }
